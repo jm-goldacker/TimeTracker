@@ -35,6 +35,7 @@ namespace MyTime.Models
 
         public void Stop()
         {
+            base.Stop();
             sw.Reset();
 
             EndTime = DateTime.Now;
@@ -48,7 +49,7 @@ namespace MyTime.Models
         public override string ToString()
         {
             TimeSpan timeSpan = sw.Elapsed;
-            return string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
+            return string.Format("{0:00}:{1:00}:{2:00}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
         }
 
         public bool IsRunning => sw.IsRunning;

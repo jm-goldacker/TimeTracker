@@ -1,15 +1,12 @@
-﻿using System;
+﻿using MyTime.Helpers;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyTime.Models.Database
 {
-    public class WorkTime
+    public class WorkTime : BaseTime
     {
-        public int Id { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public virtual ICollection<PauseTime> PauseTimes { get; set; } = new List<PauseTime>();
     }
 }

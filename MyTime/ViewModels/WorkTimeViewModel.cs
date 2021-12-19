@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using MyTime.Helpers;
 using MyTime.Models;
 using MyTime.Models.Database;
 using System;
@@ -14,7 +15,7 @@ using System.Windows.Data;
 
 namespace MyTime.ViewModels
 {
-    class WorkTimeViewModel : BaseViewModel
+    class WorkTimeViewModel : Observerable
     {
         private readonly DatabaseContext _context;
 
@@ -27,31 +28,33 @@ namespace MyTime.ViewModels
 
         public RelayCommand PauseWorkTimeStopWatch { get; set; }
 
-        private string _workTime = "00:00";
 
-        public string WorkTime 
-        { 
-            get => _workTime;
+        private WorkTime _currentWorkTime = new WorkTime();
+
+        public WorkTime CurrentWorkTime
+        {
+            get => _currentWorkTime;
             set
             {
-                _workTime = value;
+                _currentWorkTime = value;
                 OnPropertyChanged();
             }
         }
 
-        private string _pauseTime = "00:00";
+        private PauseTime _currentPause = new PauseTime();
 
-        public string PauseTime
+        public PauseTime CurrentPause
         {
-            get => _pauseTime;
+            get => _currentPause;
             set
             {
-                _pauseTime = value;
+                _currentPause = value;
                 OnPropertyChanged();
             }
         }
 
         private ObservableCollection<WorkTime> _workTimes;
+        private ObservableCollection<PauseTime> _pauseTimes;
 
         public ObservableCollection<WorkTime> WorkTimes 
         { 
@@ -65,57 +68,90 @@ namespace MyTime.ViewModels
                 OnPropertyChanged();
             }
         }
+        public ObservableCollection<PauseTime> PauseTimes
+        {
+            get
+            {
+                return _pauseTimes;
+            }
+            set
+            {
+                _pauseTimes = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        public AccumulatedTimes AccumulatedWorkTimes { get; private set; } = new AccumulatedTimes();
+
+        public AccumulatedTimes AccumulatedPauseTimes { get; private set; } = new AccumulatedTimes();
 
         public WorkTimeViewModel()
         {
             _context = new DatabaseContext();
-            _workTimes = new ObservableCollection<WorkTime>(_context.WorkTimes.ToList());
+            WorkTimes = new ObservableCollection<WorkTime>(_context.WorkTimes.ToList());
+            PauseTimes = new ObservableCollection<PauseTime>(_context.PauseTimes.ToList());
+            AccumulatedWorkTimes.UpdateAccumulatedWorkTimes(WorkTimes); 
+            AccumulatedPauseTimes.UpdateAccumulatedWorkTimes(PauseTimes);
 
             WorkTimeStopWatch = new StopWatch();
             WorkTimeStopWatch.Tick += new EventHandler(delegate (object sender, EventArgs e)
             {
-                WorkTime = WorkTimeStopWatch.ToString();
+                CurrentWorkTime.End = DateTime.Now;
             });
 
             PauseTimeStopWatch = new StopWatch();
             PauseTimeStopWatch.Tick += new EventHandler(delegate (object sender, EventArgs e)
             {
-                PauseTime = PauseTimeStopWatch.ToString();
+                CurrentPause.End = DateTime.Now;
             });
 
+            // stop pause, create new pause, start work time
             StartWorkTimeStopWatch = new RelayCommand(o =>
             {
-                WorkTimeStopWatch.Start();
-
                 if (PauseTimeStopWatch.IsRunning)
-                    PauseTimeStopWatch.Pause();
+                {
+                    PauseTimeStopWatch.Stop();
+                    AccumulatedPauseTimes.UpdateAccumulatedWorkTimes(PauseTimes);
+                }
+                else if (!WorkTimeStopWatch.IsRunning)
+                {
+                    CurrentWorkTime = new WorkTime();
+                    WorkTimes.Add(CurrentWorkTime);
+                }
+
+                WorkTimeStopWatch.Start();
             });
 
+            // stop pause, stop worktime
             StopWorkTimeStopWatch = new RelayCommand(o =>
             {
-                WorkTimeStopWatch.Stop();
-                PauseTimeStopWatch.Stop();
-                SaveCurrentWorkTime();
+                if (WorkTimeStopWatch.IsRunning || PauseTimeStopWatch.IsRunning)
+                {
+                    WorkTimeStopWatch.Stop();
+                    PauseTimeStopWatch.Stop();
+
+                    _context.WorkTimes.Add(CurrentWorkTime);
+                    _context.SaveChanges();
+
+                    AccumulatedWorkTimes.UpdateAccumulatedWorkTimes(WorkTimes);
+                    AccumulatedPauseTimes.UpdateAccumulatedWorkTimes(PauseTimes);
+                }
             });
 
             PauseWorkTimeStopWatch = new RelayCommand(o =>
             {
-                WorkTimeStopWatch.Pause();
-                PauseTimeStopWatch.Start();
+                if (WorkTimeStopWatch.IsRunning) 
+                { 
+                    WorkTimeStopWatch.Pause();
+
+                    CurrentPause = new PauseTime();
+                    PauseTimes.Add(CurrentPause);
+                    CurrentWorkTime.PauseTimes.Add(CurrentPause);
+
+                    PauseTimeStopWatch.Start();
+                }
             });
-        }
-
-        private void SaveCurrentWorkTime()
-        {
-            var workTime = new WorkTime()
-            {
-                StartTime = WorkTimeStopWatch.StartTime,
-                EndTime = WorkTimeStopWatch.EndTime
-            };
-
-            WorkTimes.Add(workTime);
-            _context.WorkTimes.Add(workTime);
-            _context.SaveChanges();
         }
     }
 }

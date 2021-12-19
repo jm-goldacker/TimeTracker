@@ -10,6 +10,7 @@ namespace MyTime.Models.Database
     public class DatabaseContext : DbContext
     {
         public DbSet<WorkTime> WorkTimes { get; set; }
+        public DbSet<PauseTime> PauseTimes { get; set; }
 
         protected override void OnConfiguring(
             DbContextOptionsBuilder optionsBuilder)

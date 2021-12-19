@@ -1,4 +1,5 @@
-﻿using MyTime.Models.Database;
+﻿using MyTime.Helpers;
+using MyTime.Models.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Windows;
 
 namespace MyTime.ViewModels
 {
-    class MainViewModel : BaseViewModel
+    class MainViewModel : Observerable
     {
         private object _currentView;
 
