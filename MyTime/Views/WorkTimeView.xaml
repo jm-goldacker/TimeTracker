@@ -169,7 +169,12 @@
                   EnableRowVirtualization="True"
                   ItemsSource="{Binding Source={StaticResource workTimesViewSource}}"
                   RowDetailsVisibilityMode="VisibleWhenSelected"
-                  RenderTransformOrigin="0.488,0.251">
+                  RenderTransformOrigin="0.488,0.251"
+                  ScrollViewer.CanContentScroll="True" 
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  Height="310"
+                  Margin="10">
 
             <DataGrid.Columns>
 
@@ -185,7 +190,7 @@
                                     Header="Duration"
                                     Width="*"
                                     IsReadOnly="True"/>
-
+    
             </DataGrid.Columns>
         </DataGrid>
         
