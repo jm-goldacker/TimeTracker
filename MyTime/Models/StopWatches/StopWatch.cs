@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Threading;
 
 namespace MyTime.Models
 {
-    public class StopWatch : DispatcherTimer
+    public abstract class StopWatch : DispatcherTimer
     {
 
         Stopwatch sw = new Stopwatch();
@@ -18,14 +13,18 @@ namespace MyTime.Models
 
         public DateTime EndTime { get; private set; }
 
-        public string ElapsedTime { get; private set; }
+        public TimeSpan Duration { get => EndTime - StartTime; }
 
         public StopWatch() : base()
         {
             Interval = new TimeSpan(0, 0, 1);
+            Tick += new EventHandler(delegate (object? sender, EventArgs e)
+            {
+                EndTime = DateTime.Now;
+            });
         }
 
-        public void Start()
+        public new void Start()
         {
             base.Start();
             sw.Start();
@@ -33,7 +32,7 @@ namespace MyTime.Models
             StartTime = DateTime.Now;
         }
 
-        public void Stop()
+        public new void Stop()
         {
             base.Stop();
             sw.Reset();
@@ -44,12 +43,6 @@ namespace MyTime.Models
         public void Pause()
         {
             sw.Stop();
-        }
-
-        public override string ToString()
-        {
-            TimeSpan timeSpan = sw.Elapsed;
-            return string.Format("{0:00}:{1:00}:{2:00}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
         }
 
         public bool IsRunning => sw.IsRunning;

@@ -1,13 +1,9 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
 using MyTime.Helpers;
-using MyTime.Models;
 using MyTime.Models.Database;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyTime.ViewModels
 {

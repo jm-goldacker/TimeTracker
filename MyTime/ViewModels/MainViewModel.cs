@@ -1,58 +1,45 @@
 ﻿using MyTime.Helpers;
-using MyTime.Models.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace MyTime.ViewModels
 {
     class MainViewModel : Observerable
     {
-        private object _currentView;
+        private object _currentView = new HomeViewModel();
 
         public object CurrentView
         {
             get { return _currentView; }
-            set 
+            private set 
             { 
                 _currentView = value; 
                 OnPropertyChanged();
             }
         }
 
-        public HomeViewModel HomeViewModel { get; set; }
+        public HomeViewModel HomeViewModel { get; } = new();
 
-        public TasksViewModel TasksViewModel { get; set; }
+        public TasksViewModel TasksViewModel { get; } = new();
 
-        public WorkTimeViewModel WorkTimeViewModel { get; set; }
+        public WorkTimeViewModel WorkTimeViewModel { get; } = new();
 
-        public RelayCommand HomeViewCommand { get; set; }
+        public RelayCommand HomeViewCommand { get; }
 
-        public RelayCommand TasksViewCommand { get; set; }
+        public RelayCommand TasksViewCommand { get; }
 
-        public RelayCommand WorkTimeViewCommand { get; set; }
+        public RelayCommand WorkTimeViewCommand { get; }
 
-        public RelayCommand CloseCommand { get; set; }
+        public RelayCommand CloseCommand { get; }
 
         public MainViewModel()
-        {
-            HomeViewModel = new HomeViewModel();
-            TasksViewModel = new TasksViewModel();
-            WorkTimeViewModel = new WorkTimeViewModel();
-            
-            CurrentView = HomeViewModel;
-
+        {            
             HomeViewCommand = new RelayCommand(o => CurrentView = HomeViewModel);
             TasksViewCommand = new RelayCommand(o => CurrentView = TasksViewModel);
             WorkTimeViewCommand = new RelayCommand(o => CurrentView = WorkTimeViewModel );
             CloseCommand = new RelayCommand(CloseWindow);
-
         }
 
-        private void CloseWindow(object window)
+        private void CloseWindow(object? window)
         {
             if (window != null && window is Window)
             {

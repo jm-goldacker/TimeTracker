@@ -54,7 +54,7 @@
                    Grid.Row="0"
                    Name="CurrentWorkTimeLabel"
                    Foreground="White"
-                   Text="{Binding CurrentWorkTime.Duration, StringFormat={}{0:hh}:{0:mm}:{0:ss}, TargetNullValue='00:00:00'}"/>
+                   Text="{Binding CurrentWorkTimeDuration, StringFormat={}{0:hh}:{0:mm}:{0:ss}, TargetNullValue='00:00:00'}"/>
             
             <TextBlock Foreground="White"
                        Grid.Column="2"

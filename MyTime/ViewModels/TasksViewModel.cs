@@ -1,6 +1,7 @@
 ﻿using MyTime.Helpers;
 using MyTime.Models;
 using MyTime.Models.Database;
+using MyTime.Models.StopWatches;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -57,8 +58,8 @@ namespace MyTime.ViewModels
             _context = new DatabaseContext();
             TaskTimes = new ObservableCollection<TaskTime>(_context.TaskTimes.ToList());
 
-            TasksStopWatch = new StopWatch();
-            TasksStopWatch.Tick += new EventHandler(delegate (object sender, EventArgs e)
+            TasksStopWatch = TaskStopWatch.Instance;
+            TasksStopWatch.Tick += new EventHandler(delegate (object? sender, EventArgs e)
             {
                 CurrentTaskTime.End = DateTime.Now;
             });

@@ -1,14 +1,10 @@
 ﻿using MyTime.Helpers;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyTime.Models.Database
 {
-    public abstract class BaseTime : Observerable
+    public class BaseTime : Observerable
     {
         private int _id;
         private DateTime _start = DateTime.Now;

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using MyTime.Helpers;
 using MyTime.Models;
 using MyTime.Models.Database;
+using MyTime.Models.StopWatches;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,10 +18,7 @@ namespace MyTime.ViewModels
 {
     class WorkTimeViewModel : Observerable
     {
-        private readonly DatabaseContext _context;
-
-        public StopWatch WorkTimeStopWatch { get; set; }
-        public StopWatch PauseTimeStopWatch {get; set; }
+        private readonly DatabaseContext _context = new DatabaseContext();
 
         public RelayCommand StartWorkTimeStopWatch {get; set; }
 
@@ -28,15 +26,17 @@ namespace MyTime.ViewModels
 
         public RelayCommand PauseWorkTimeStopWatch { get; set; }
 
+        private TimeSpan _currentWorkTimeDuration = new TimeSpan();
 
-        private WorkTime _currentWorkTime = new WorkTime();
-
-        public WorkTime CurrentWorkTime
+        public TimeSpan CurrentWorkTimeDuration
         {
-            get => _currentWorkTime;
+            get 
+            { 
+                return _currentWorkTimeDuration; 
+            }
             set
             {
-                _currentWorkTime = value;
+                _currentWorkTimeDuration = value;
                 OnPropertyChanged();
             }
         }
@@ -81,27 +81,25 @@ namespace MyTime.ViewModels
             }
         }
 
-
         public AccumulatedTimes AccumulatedWorkTimes { get; private set; } = new AccumulatedTimes();
 
         public AccumulatedTimes AccumulatedPauseTimes { get; private set; } = new AccumulatedTimes();
 
         public WorkTimeViewModel()
         {
-            _context = new DatabaseContext();
             WorkTimes = new ObservableCollection<WorkTime>(_context.WorkTimes.ToList());
             PauseTimes = new ObservableCollection<PauseTime>(_context.PauseTimes.ToList());
             AccumulatedWorkTimes.UpdateAccumulatedWorkTimes(WorkTimes); 
             AccumulatedPauseTimes.UpdateAccumulatedWorkTimes(PauseTimes);
 
-            WorkTimeStopWatch = new StopWatch();
-            WorkTimeStopWatch.Tick += new EventHandler(delegate (object sender, EventArgs e)
+            var WorkTimeStopWatch = WorkStopWatch.Instance;
+            WorkTimeStopWatch.Tick += new EventHandler(delegate (object? sender, EventArgs e)
             {
-                CurrentWorkTime.End = DateTime.Now;
+                CurrentWorkTimeDuration = WorkTimeStopWatch.Duration;
             });
 
-            PauseTimeStopWatch = new StopWatch();
-            PauseTimeStopWatch.Tick += new EventHandler(delegate (object sender, EventArgs e)
+            var PauseTimeStopWatch = PauseStopWatch.Instance;
+            PauseTimeStopWatch.Tick += new EventHandler(delegate (object? sender, EventArgs e)
             {
                 CurrentPause.End = DateTime.Now;
             });
@@ -116,8 +114,8 @@ namespace MyTime.ViewModels
                 }
                 else if (!WorkTimeStopWatch.IsRunning)
                 {
-                    CurrentWorkTime = new WorkTime();
-                    WorkTimes.Add(CurrentWorkTime);
+                    //CurrentWorkTime = new WorkTime();
+                    //WorkTimes.Add(CurrentWorkTime);
                 }
 
                 WorkTimeStopWatch.Start();
@@ -131,7 +129,7 @@ namespace MyTime.ViewModels
                     WorkTimeStopWatch.Stop();
                     PauseTimeStopWatch.Stop();
 
-                    _context.WorkTimes.Add(CurrentWorkTime);
+                    //_context.WorkTimes.Add((WorkTime)WorkStopWatch.Instance.CurrentTime);
                     _context.SaveChanges();
 
                     AccumulatedWorkTimes.UpdateAccumulatedWorkTimes(WorkTimes);
@@ -147,7 +145,7 @@ namespace MyTime.ViewModels
 
                     CurrentPause = new PauseTime();
                     PauseTimes.Add(CurrentPause);
-                    CurrentWorkTime.PauseTimes.Add(CurrentPause);
+                    //CurrentWorkTime.PauseTimes.Add(CurrentPause);
 
                     PauseTimeStopWatch.Start();
                 }
