@@ -54,7 +54,7 @@
                    Grid.Row="0"
                    Name="CurrentWorkTimeLabel"
                    Foreground="White"
-                   Text="{Binding CurrentWorkTimeDuration, StringFormat={}{0:hh}:{0:mm}:{0:ss}, TargetNullValue='00:00:00'}"/>
+                   Text="{Binding WorkTimeStopWatch.Duration, StringFormat={}{0:hh}:{0:mm}:{0:ss}, TargetNullValue='00:00:00'}"/>
             
             <TextBlock Foreground="White"
                        Grid.Column="2"
@@ -68,22 +68,22 @@
                    Grid.Row="0"
                    Name="CurrentPauseTimeLabel"
                    Foreground="White"
-                   Text="{Binding CurrentPause.Duration, StringFormat={}{0:hh}:{0:mm}:{0:ss}, TargetNullValue='00:00:00'}"/>
+                   Text="{Binding PauseTimeStopWatch.Duration, StringFormat={}{0:hh}:{0:mm}:{0:ss}, TargetNullValue='00:00:00'}"/>
             
             <Button Grid.Column="4"
                     Grid.Row="0"
                     Content="Start"
-                    Command="{Binding StartWorkTimeStopWatch}"/>
+                    Command="{Binding StartWorkTime}"/>
 
             <Button Grid.Column="5"
                     Grid.Row="0"
                     Content="Pause"
-                    Command="{Binding PauseWorkTimeStopWatch}"/>
+                    Command="{Binding PauseWorkTime}"/>
 
             <Button Grid.Column="6"
                     Grid.Row="0"
                     Content="Stop"
-                    Command="{Binding StopWorkTimeStopWatch}"/>
+                    Command="{Binding StopWorkTime}"/>
 
             <TextBlock Foreground="White"
                        Grid.Column="0"

@@ -3,11 +3,8 @@ using MyTime.Models;
 using MyTime.Models.Database;
 using MyTime.Models.StopWatches;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyTime.ViewModels
 {
