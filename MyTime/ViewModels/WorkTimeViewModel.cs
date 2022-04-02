@@ -10,7 +10,7 @@ namespace MyTime.ViewModels
 {
     class WorkTimeViewModel : Observerable
     {
-        private readonly DatabaseContext _context = new DatabaseContext();
+        private readonly DatabaseContext _context = new();
 
         public RelayCommand StartWorkTime {get; set; }
 
@@ -46,13 +46,15 @@ namespace MyTime.ViewModels
             }
         }
 
-        public AccumulatedTimes AccumulatedWorkTimes { get; private set; } = new AccumulatedTimes();
+        public AccumulatedTimes AccumulatedWorkTimes { get; private set; } = new();
 
-        public AccumulatedTimes AccumulatedPauseTimes { get; private set; } = new AccumulatedTimes();
+        private static readonly AccumulatedTimes accumulatedTimes = new();
+
+        public AccumulatedTimes AccumulatedPauseTimes { get; private set; } = accumulatedTimes;
         public WorkStopWatch WorkTimeStopWatch { get; } = WorkStopWatch.Instance;
         public PauseStopWatch PauseTimeStopWatch { get; } = PauseStopWatch.Instance;
 
-        private readonly List<PauseTime> _currentPauseTimes = new List<PauseTime>();
+        private readonly List<PauseTime> _currentPauseTimes = new();
 
         public WorkTimeViewModel()
         {

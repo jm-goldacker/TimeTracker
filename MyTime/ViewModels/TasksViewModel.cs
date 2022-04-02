@@ -10,9 +10,9 @@ namespace MyTime.ViewModels
 {
     class TasksViewModel : Observerable
     {
-        private readonly DatabaseContext _context;
+        private readonly DatabaseContext _context = new DatabaseContext();
 
-        public StopWatch TasksStopWatch { get; set; }
+        public StopWatch TasksStopWatch { get; set; } = TaskStopWatch.Instance;
        
         public RelayCommand StartTasksStopWatch { get; set; }
 
@@ -52,17 +52,15 @@ namespace MyTime.ViewModels
 
         public TasksViewModel()
         {
-            _context = new DatabaseContext();
             TaskTimes = new ObservableCollection<TaskTime>(_context.TaskTimes.ToList());
 
-            TasksStopWatch = TaskStopWatch.Instance;
             TasksStopWatch.Tick += new EventHandler(delegate (object? sender, EventArgs e)
             {
                 CurrentTaskTime.End = DateTime.Now;
             });
 
             // stop pause, create new pause, start work time
-            StartTasksStopWatch = new RelayCommand(o =>
+            StartTasksStopWatch = new RelayCommand(_ =>
             {
                 if (!TasksStopWatch.IsRunning)
                 {
@@ -72,10 +70,10 @@ namespace MyTime.ViewModels
                 }
 
                 TasksStopWatch.Start();
-            });
+            }, _ => WorkStopWatch.Instance.IsRunning);
 
             // stop pause, stop worktime
-            StopTasksStopWatch = new RelayCommand(o =>
+            StopTasksStopWatch = new RelayCommand(_ =>
             {
                 if (TasksStopWatch.IsRunning)
                 {
@@ -86,7 +84,7 @@ namespace MyTime.ViewModels
                     _context.TaskTimes.Add(CurrentTaskTime);
                     _context.SaveChanges();
                 }
-            });
+            }, _ => TasksStopWatch.IsRunning);
         }
     }
 }
