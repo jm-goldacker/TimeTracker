@@ -12,7 +12,7 @@ namespace MyTime.Models.Database
             DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(
-                "Data Source=C:\\Users\\golda\\source\\repos\\MyTime\\MyTime\\timeTracker.db");
+                "Data Source=timeTracker.db");
             optionsBuilder.UseLazyLoadingProxies();
             base.OnConfiguring(optionsBuilder);
         }
