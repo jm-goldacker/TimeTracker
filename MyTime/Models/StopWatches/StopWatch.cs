@@ -50,7 +50,7 @@ namespace MyTime.Models
             });
         }
 
-        public new void Start(bool resume = false)
+        public void Start(bool resume = false)
         {
             base.Start();
             sw.Start();

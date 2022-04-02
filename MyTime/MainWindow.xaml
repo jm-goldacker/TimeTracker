@@ -9,16 +9,15 @@
         mc:Ignorable="d"
         Height="680" Width="900"
         Background="Transparent"
-        WindowStyle="None"
+        WindowStyle="ToolWindow"
         ResizeMode="NoResize"
-        AllowsTransparency="True">
+        AllowsTransparency="False">
 
     <Window.DataContext>
         <viewModels:MainViewModel/>
     </Window.DataContext>
     
-    <Border Background="#272537"
-            CornerRadius="20">
+    <Border Background="#272537">
 
         <Grid>
             <Grid.ColumnDefinitions>
