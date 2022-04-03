@@ -24,7 +24,7 @@
                    HorizontalAlignment="Left"
                    Margin="0,0,0,20"/>
 
-        <Grid>
+        <Grid Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
@@ -69,21 +69,27 @@
                    Name="CurrentPauseTimeLabel"
                    Foreground="White"
                    Text="{Binding PauseTimeStopWatch.Duration, StringFormat={}{0:hh}:{0:mm}:{0:ss}, TargetNullValue='00:00:00'}"/>
-            
+
             <Button Grid.Column="4"
                     Grid.Row="0"
-                    Content="Start"
-                    Command="{Binding StartWorkTime}"/>
+                    Content="&#9654;"
+                    Command="{Binding StartWorkTime}"
+                    Margin="5,0,5,0" 
+                    Style="{StaticResource UserButtonTheme}"/>
 
             <Button Grid.Column="5"
                     Grid.Row="0"
-                    Content="Pause"
-                    Command="{Binding PauseWorkTime}"/>
+                    Content="&#9208;"
+                    Margin="5,0,5,0" 
+                    Command="{Binding PauseWorkTime}"
+                    Style="{StaticResource UserButtonTheme}"/>
 
             <Button Grid.Column="6"
                     Grid.Row="0"
-                    Content="Stop"
-                    Command="{Binding StopWorkTime}"/>
+                    Content="&#9209;"
+                    Margin="5,0,5,0" 
+                    Command="{Binding StopWorkTime}"
+                    Style="{StaticResource UserButtonTheme}"/>
 
             <TextBlock Foreground="White"
                        Grid.Column="0"
@@ -173,15 +179,10 @@
                   ScrollViewer.CanContentScroll="True" 
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                  Height="310"
-                  Margin="10">
+                  Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=ActualHeight}">
 
             <DataGrid.Columns>
 
-                <DataGridTextColumn Binding="{Binding Id}"
-                                    Header="Id"
-                                    Width="*"
-                                    IsReadOnly="True"/>
                 <DataGridTextColumn Binding="{Binding Start, StringFormat={}{0:dd}.{0:MM}.{0:yyyy}}"
                                     Header="Date"
                                     Width="*"
