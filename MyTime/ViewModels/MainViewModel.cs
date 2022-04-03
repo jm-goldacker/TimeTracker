@@ -1,4 +1,4 @@
-﻿using MyTime.Helpers;
+﻿using MyTime.Models;
 using System.Windows;
 
 namespace MyTime.ViewModels

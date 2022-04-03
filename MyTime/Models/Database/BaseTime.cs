@@ -1,10 +1,9 @@
-﻿using MyTime.Helpers;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyTime.Models.Database
 {
-    public class BaseTime : Observerable
+    public class BaseTime
     {
         private int _id;
         private DateTime _start = DateTime.Now;
@@ -16,7 +15,6 @@ namespace MyTime.Models.Database
             set
             {
                 _id = value;
-                OnPropertyChanged();
             }
         }
 
@@ -26,8 +24,6 @@ namespace MyTime.Models.Database
             set
             {
                 _start = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(Duration));
             }
         }
 
@@ -37,8 +33,6 @@ namespace MyTime.Models.Database
             set
             {
                 _end = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(Duration));
             }
         }
 

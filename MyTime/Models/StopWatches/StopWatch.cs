@@ -9,7 +9,7 @@ namespace MyTime.Models
     public abstract class StopWatch : DispatcherTimer, INotifyPropertyChanged
     {
 
-        Stopwatch sw = new Stopwatch();
+        private Stopwatch _stopWatch = new();
         private DateTime _endTime;
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -37,7 +37,7 @@ namespace MyTime.Models
         {
             get
             {
-                return sw.Elapsed;
+                return _stopWatch.Elapsed;
             }
         }
 
@@ -53,7 +53,7 @@ namespace MyTime.Models
         public void Start(bool resume = false)
         {
             base.Start();
-            sw.Start();
+            _stopWatch.Start();
 
             if (!resume)
                 StartTime = DateTime.Now;
@@ -62,16 +62,16 @@ namespace MyTime.Models
         public new void Stop()
         {
             base.Stop();
-            sw.Reset();
+            _stopWatch.Reset();
 
             EndTime = DateTime.Now;
         }
 
         public void Pause()
         {
-            sw.Stop();
+            _stopWatch.Stop();
         }
 
-        public bool IsRunning => sw.IsRunning;
+        public bool IsRunning => _stopWatch.IsRunning;
     }
 }

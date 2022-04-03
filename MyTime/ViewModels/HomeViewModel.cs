@@ -1,6 +1,6 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
-using MyTime.Helpers;
+using MyTime.Models;
 using MyTime.Models.Database;
 using System;
 using System.Linq;

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace MyTime.Helpers
+namespace MyTime.Models
 {
     public abstract class Observerable : INotifyPropertyChanged
     {
