@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MyTime.Repositories
 {
-    public interface IWorkTimeRepository
+    public interface IDatabaseRepository
     {
         IDictionary<DateTime, double> GetWorkTimesPerDay();
 

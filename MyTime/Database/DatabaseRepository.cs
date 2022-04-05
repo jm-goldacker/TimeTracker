@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace MyTime.Repositories
 {
-    public class WorkTimeRepository : IWorkTimeRepository
+    public class DatabaseRepository : IDatabaseRepository
     {
         private DatabaseContext _context = new();
 

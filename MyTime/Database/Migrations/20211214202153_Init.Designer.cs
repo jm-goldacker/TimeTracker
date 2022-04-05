@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MyTime.Models.Database;
+using MyTime.Repositories;
 
 #nullable disable
 
 namespace MyTime.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211214203058_Init2")]
-    partial class Init2
+    [Migration("20211214202153_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

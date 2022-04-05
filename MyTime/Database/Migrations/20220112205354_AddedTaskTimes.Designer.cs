@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MyTime.Models.Database;
+using MyTime.Repositories;
 
 #nullable disable
 
 namespace MyTime.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211219121905_AddPauseDbModel")]
-    partial class AddPauseDbModel
+    [Migration("20220112205354_AddedTaskTimes")]
+    partial class AddedTaskTimes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,6 +39,27 @@ namespace MyTime.Migrations
                     b.HasIndex("WorkTimeId");
 
                     b.ToTable("PauseTimes");
+                });
+
+            modelBuilder.Entity("MyTime.Models.Database.TaskTime", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("End")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Start")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TaskTimes");
                 });
 
             modelBuilder.Entity("MyTime.Models.Database.WorkTime", b =>

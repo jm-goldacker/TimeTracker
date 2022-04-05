@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MyTime.Models.Database;
+using MyTime.Repositories;
 
 #nullable disable
 
 namespace MyTime.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211214202153_Init")]
-    partial class Init
+    [Migration("20211219112618_AddPauseDuration")]
+    partial class AddPauseDuration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,10 +25,13 @@ namespace MyTime.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateOnly>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("TEXT");
+
+                    b.Property<TimeSpan>("PauseDuration")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

@@ -10,7 +10,7 @@ namespace MyTime.ViewModels
 {
     public class HomeViewModel : Observerable
     {
-        private readonly IWorkTimeRepository _workTimeRepository = new WorkTimeRepository();
+        private readonly IDatabaseRepository _workTimeRepository = new DatabaseRepository();
 
         public HomeViewModel()
         {

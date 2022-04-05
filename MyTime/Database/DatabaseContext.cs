@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyTime.Models.Database;
 
-namespace MyTime.Models.Database
+namespace MyTime.Repositories
 {
     public class DatabaseContext : DbContext
     {

@@ -33,7 +33,7 @@ namespace MyTime.ViewModels
             }
         }
 
-        private readonly IWorkTimeRepository _repository = new WorkTimeRepository();
+        private readonly IDatabaseRepository _repository = new DatabaseRepository();
 
         public TasksViewModel()
         {

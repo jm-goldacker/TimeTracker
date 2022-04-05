@@ -55,7 +55,7 @@ namespace MyTime.ViewModels
 
         private readonly List<PauseTime> _currentPauseTimes = new();
 
-        private readonly IWorkTimeRepository _workTimeRepository = new WorkTimeRepository();
+        private readonly IDatabaseRepository _workTimeRepository = new DatabaseRepository();
 
         public WorkTimeViewModel()
         {
