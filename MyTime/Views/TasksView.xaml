@@ -30,6 +30,8 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -55,14 +57,27 @@
                    BorderBrush="GhostWhite"
                    Text="{Binding CurrentTaskName, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Button Grid.Column="2"
+            <TextBlock Grid.Column="2"
+                   Grid.Row="0"
+                   Foreground="White"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Text="duration"/>
+
+            <TextBlock Grid.Column="3"
+                   Grid.Row="0"
+                   Name="TaskDurationLabel"
+                   Foreground="White"
+                   Text="{Binding TasksStopWatch.Duration, StringFormat={}{0:hh}:{0:mm}:{0:ss}, TargetNullValue='00:00:00'}"/>
+
+            <Button Grid.Column="4"
                     Grid.Row="0"
                     Content="Start"
                     Margin="5,0,5,0"
                     Command="{Binding StartTasksStopWatch}"
                     Style="{StaticResource UserButtonTheme}"/>
 
-            <Button Grid.Column="3"
+            <Button Grid.Column="5"
                     Grid.Row="0"
                     Content="Stop"
                     Margin="5,0,5,0"

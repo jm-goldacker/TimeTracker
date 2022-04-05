@@ -1,6 +1,7 @@
 ﻿using MyTime.Models;
 using MyTime.Models.Database;
 using MyTime.Models.StopWatches;
+using MyTime.Repositories;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,31 +10,14 @@ namespace MyTime.ViewModels
 {
     class TasksViewModel : Observerable
     {
-        private readonly DatabaseContext _context = new DatabaseContext();
-
         public StopWatch TasksStopWatch { get; set; } = TaskStopWatch.Instance;
        
         public RelayCommand StartTasksStopWatch { get; set; }
 
         public RelayCommand StopTasksStopWatch { get; set; }
 
-        public RelayCommand PauseTasksStopWatch { get; set; }
-
-
-        private TaskTime _currentTaskTime = new TaskTime();
-
-        public TaskTime CurrentTaskTime
-        {
-            get => _currentTaskTime;
-            set
-            {
-                _currentTaskTime = value;
-                OnPropertyChanged();
-            }
-        }
-
         public string CurrentTaskName { get; set; } = string.Empty;
-
+        
         private ObservableCollection<TaskTime> _taskTimes;
 
         public ObservableCollection<TaskTime> TaskTimes
@@ -49,41 +33,47 @@ namespace MyTime.ViewModels
             }
         }
 
+        private readonly IWorkTimeRepository _repository = new WorkTimeRepository();
+
         public TasksViewModel()
         {
-            TaskTimes = new ObservableCollection<TaskTime>(_context.TaskTimes.ToList());
+            TaskTimes = new ObservableCollection<TaskTime>(_repository.GetTaskTimes());
 
-            TasksStopWatch.Tick += new EventHandler(delegate (object? sender, EventArgs e)
-            {
-                CurrentTaskTime.End = DateTime.Now;
-            });
+            StartTasksStopWatch = new RelayCommand(OnStartTaskExecute, OnStartTaskCanExecute);
+            StopTasksStopWatch = new RelayCommand(OnStopTaskExecute, OnStopTaskCanExecute);
+        }
 
-            // stop pause, create new pause, start work time
-            StartTasksStopWatch = new RelayCommand(_ =>
+        private void OnStartTaskExecute(object? obj)
+        {
+            TasksStopWatch.Start();
+        }
+
+        private bool OnStartTaskCanExecute(object? arg)
+        {
+            return WorkStopWatch.Instance.IsRunning && !TasksStopWatch.IsRunning; 
+        }
+        
+        private void OnStopTaskExecute(object? obj)
+        {
+            if (TasksStopWatch.IsRunning)
             {
-                if (!TasksStopWatch.IsRunning)
+                TasksStopWatch.Stop();
+
+                var task = new TaskTime()
                 {
-                    CurrentTaskTime = new TaskTime();
-                    CurrentTaskTime.Name = CurrentTaskName;
-                    TaskTimes.Add(CurrentTaskTime);
-                }
+                    Start = TasksStopWatch.StartTime,
+                    End = TasksStopWatch.EndTime,
+                    Name = CurrentTaskName
+                };
 
-                TasksStopWatch.Start();
-            }, _ => WorkStopWatch.Instance.IsRunning);
+                _repository.SaveTaskTime(task);
+                TaskTimes.Add(task);
+            }
+        }
 
-            // stop pause, stop worktime
-            StopTasksStopWatch = new RelayCommand(_ =>
-            {
-                if (TasksStopWatch.IsRunning)
-                {
-                    TasksStopWatch.Stop();
-
-                    CurrentTaskTime.Name = CurrentTaskName;
-
-                    _context.TaskTimes.Add(CurrentTaskTime);
-                    _context.SaveChanges();
-                }
-            }, _ => TasksStopWatch.IsRunning);
+        private bool OnStopTaskCanExecute(object? arg)
+        {
+            return TasksStopWatch.IsRunning;
         }
     }
 }

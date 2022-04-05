@@ -57,12 +57,14 @@ namespace MyTime.Models
             var currentDayOfWeek = DateTime.Now.DayOfWeek == DayOfWeek.Sunday 
                 ? 7 
                 : (double)DateTime.Now.DayOfWeek;
+
             var firstDayOfWeek = DateTime.Now.Subtract(TimeSpan.FromDays(currentDayOfWeek - 1));
 
             WeeklyTime = new TimeSpan(workTimes
                 .Where(wt => wt.Start >= firstDayOfWeek)
                 .ToList()
                 .Sum(wt => wt.Duration.Ticks));
+
             MonthlyTime = new TimeSpan(workTimes
                 .Where(wt => wt.Start.Month == DateTime.Now.Month)
                 .ToList()

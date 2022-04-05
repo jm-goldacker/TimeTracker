@@ -11,5 +11,7 @@ namespace MyTime.Repositories
         IReadOnlyCollection<WorkTime> GetWorkTimes();
         IReadOnlyCollection<PauseTime> GetPauses();
         void SaveWorkTime(WorkTime workTime);
+        IReadOnlyCollection<TaskTime> GetTaskTimes();
+        void SaveTaskTime(TaskTime task);
     }
 }

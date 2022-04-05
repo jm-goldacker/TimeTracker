@@ -44,5 +44,18 @@ namespace MyTime.Repositories
             _context.WorkTimes.Add(workTime);
             _context.SaveChanges();
         }
+
+        public IReadOnlyCollection<TaskTime> GetTaskTimes()
+        {
+            return _context.TaskTimes
+                .ToList()
+                .AsReadOnly();
+        }
+
+        public void SaveTaskTime(TaskTime task)
+        {
+            _context.TaskTimes.Add(task);
+            _context.SaveChanges();
+        }
     }
 }

@@ -73,7 +73,7 @@
             <Button Grid.Column="4"
                     Grid.Row="0"
                     Content="&#9654;"
-                    Command="{Binding StartWorkTime}"
+                    Command="{Binding StartWork}"
                     Margin="5,0,5,0" 
                     Style="{StaticResource UserButtonTheme}"/>
 
@@ -81,14 +81,14 @@
                     Grid.Row="0"
                     Content="&#9208;"
                     Margin="5,0,5,0" 
-                    Command="{Binding PauseWorkTime}"
+                    Command="{Binding PauseWork}"
                     Style="{StaticResource UserButtonTheme}"/>
 
             <Button Grid.Column="6"
                     Grid.Row="0"
                     Content="&#9209;"
                     Margin="5,0,5,0" 
-                    Command="{Binding StopWorkTime}"
+                    Command="{Binding StopWork}"
                     Style="{StaticResource UserButtonTheme}"/>
 
             <TextBlock Foreground="White"

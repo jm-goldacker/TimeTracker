@@ -8,17 +8,14 @@ using System.Collections.ObjectModel;
 namespace MyTime.ViewModels
 {
     class WorkTimeViewModel : Observerable
-    {        
-        private readonly IWorkTimeRepository _workTimeRepository = new WorkTimeRepository();
+    {   
+        public RelayCommand StartWork {get; set; }
 
-        public RelayCommand StartWorkTime {get; set; }
+        public RelayCommand StopWork { get; set;}
 
-        public RelayCommand StopWorkTime { get; set;}
-
-        public RelayCommand PauseWorkTime { get; set; }
+        public RelayCommand PauseWork { get; set; }
 
         private ObservableCollection<WorkTime> _workTimes;
-        private ObservableCollection<PauseTime> _pauseTimes;
 
         public ObservableCollection<WorkTime> WorkTimes 
         { 
@@ -32,6 +29,9 @@ namespace MyTime.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        private ObservableCollection<PauseTime> _pauseTimes;
+
         public ObservableCollection<PauseTime> PauseTimes
         {
             get
@@ -47,53 +47,61 @@ namespace MyTime.ViewModels
 
         public AccumulatedTimes AccumulatedWorkTimes { get; private set; } = new();
 
-        private static readonly AccumulatedTimes accumulatedTimes = new();
+        public AccumulatedTimes AccumulatedPauseTimes { get; private set; } = new();
 
-        public AccumulatedTimes AccumulatedPauseTimes { get; private set; } = accumulatedTimes;
         public WorkStopWatch WorkTimeStopWatch { get; } = WorkStopWatch.Instance;
+
         public PauseStopWatch PauseTimeStopWatch { get; } = PauseStopWatch.Instance;
 
         private readonly List<PauseTime> _currentPauseTimes = new();
 
+        private readonly IWorkTimeRepository _workTimeRepository = new WorkTimeRepository();
+
         public WorkTimeViewModel()
+        {
+            LoadTimes();
+
+            StartWork = new RelayCommand(OnStartWorkExecute, OnStartWorkCanExecute);
+            StopWork = new RelayCommand(OnStopWorkExecute, OnStopWorkCanExecute);
+            PauseWork = new RelayCommand(OnPauseWorkExecute, OnPauseWorkCanExecute);
+        }
+
+        private void LoadTimes()
         {
             WorkTimes = new(_workTimeRepository.GetWorkTimes());
             PauseTimes = new(_workTimeRepository.GetPauses());
             AccumulatedWorkTimes.UpdateAccumulatedWorkTimes(WorkTimes);
             AccumulatedPauseTimes.UpdateAccumulatedWorkTimes(PauseTimes);
+        }
 
-            // stop pause, create new pause, start work time
-            StartWorkTime = new RelayCommand(o => 
+        private void OnStartWorkExecute(object? o)
+        {
+            if (PauseTimeStopWatch.IsRunning)
             {
-                if (PauseTimeStopWatch.IsRunning)
-                {
-                    PauseTimeStopWatch.Stop();
-                    SavePause();
-                    WorkTimeStopWatch.Start(true);
-                }
+                PauseTimeStopWatch.Stop();
+                SavePause();
+                WorkTimeStopWatch.Start(true);
+            }
 
-                else
-                    WorkTimeStopWatch.Start();
-            }, o => !WorkTimeStopWatch.IsRunning || PauseTimeStopWatch.IsRunning);
+            else
+                WorkTimeStopWatch.Start();
+        }
 
-            // stop pause, stop worktime
-            StopWorkTime = new RelayCommand(o =>
+        private bool OnStartWorkCanExecute(object? o)
+        {
+            return !WorkTimeStopWatch.IsRunning || PauseTimeStopWatch.IsRunning;
+        }
+
+        private void OnStopWorkExecute(object? o)
+        {
+            WorkTimeStopWatch.Stop();
+            SaveWorkTime();
+
+            if (PauseTimeStopWatch.Duration.TotalSeconds > 0)
             {
-                WorkTimeStopWatch.Stop();
-                SaveWorkTime();
-
-                if (PauseTimeStopWatch.Duration.TotalSeconds > 0)
-                {
-                    PauseTimeStopWatch.Stop();
-                    SavePause();
-                }
-            }, o => WorkTimeStopWatch.IsRunning || PauseTimeStopWatch.IsRunning);
-
-            PauseWorkTime = new RelayCommand(o =>
-            {
-                //WorkTimeStopWatch.Pause();
-                PauseTimeStopWatch.Start();
-            }, o => WorkTimeStopWatch.IsRunning && !PauseTimeStopWatch.IsRunning);
+                PauseTimeStopWatch.Stop();
+                SavePause();
+            }
         }
 
         private void SaveWorkTime()
@@ -122,6 +130,21 @@ namespace MyTime.ViewModels
             AccumulatedPauseTimes.UpdateAccumulatedWorkTimes(PauseTimes);
 
             _currentPauseTimes.Add(pauseTime);
+        }
+
+        private bool OnStopWorkCanExecute(object? o)
+        {
+            return WorkTimeStopWatch.IsRunning || PauseTimeStopWatch.IsRunning;
+        }
+
+        private void OnPauseWorkExecute(object? o)
+        {
+            PauseTimeStopWatch.Start();
+        }
+
+        private bool OnPauseWorkCanExecute(object? o)
+        {
+            return WorkTimeStopWatch.IsRunning && !PauseTimeStopWatch.IsRunning;
         }
     }
 }
