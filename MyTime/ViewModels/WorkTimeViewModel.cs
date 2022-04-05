@@ -1,15 +1,15 @@
 ﻿using MyTime.Models;
 using MyTime.Models.Database;
 using MyTime.Models.StopWatches;
+using MyTime.Repositories;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace MyTime.ViewModels
 {
     class WorkTimeViewModel : Observerable
-    {
-        private readonly DatabaseContext _context = new();
+    {        
+        private readonly IWorkTimeRepository _workTimeRepository = new WorkTimeRepository();
 
         public RelayCommand StartWorkTime {get; set; }
 
@@ -57,8 +57,8 @@ namespace MyTime.ViewModels
 
         public WorkTimeViewModel()
         {
-            WorkTimes = new ObservableCollection<WorkTime>(_context.WorkTimes.ToList());
-            PauseTimes = new ObservableCollection<PauseTime>(_context.PauseTimes.ToList());
+            WorkTimes = new(_workTimeRepository.GetWorkTimes());
+            PauseTimes = new(_workTimeRepository.GetPauses());
             AccumulatedWorkTimes.UpdateAccumulatedWorkTimes(WorkTimes);
             AccumulatedPauseTimes.UpdateAccumulatedWorkTimes(PauseTimes);
 
@@ -107,8 +107,7 @@ namespace MyTime.ViewModels
 
             WorkTimes.Add(workTime);
             AccumulatedWorkTimes.UpdateAccumulatedWorkTimes(WorkTimes);
-            _context.WorkTimes.Add(workTime);
-            _context.SaveChanges();
+            _workTimeRepository.SaveWorkTime(workTime);
         }
 
         private void SavePause()

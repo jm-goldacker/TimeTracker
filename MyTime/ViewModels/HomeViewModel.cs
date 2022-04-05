@@ -2,6 +2,7 @@
 using LiveCharts.Wpf;
 using MyTime.Models;
 using MyTime.Models.Database;
+using MyTime.Repositories;
 using System;
 using System.Linq;
 
@@ -9,14 +10,11 @@ namespace MyTime.ViewModels
 {
     public class HomeViewModel : Observerable
     {
-        private DatabaseContext _context = new DatabaseContext();
+        private readonly IWorkTimeRepository _workTimeRepository = new WorkTimeRepository();
+
         public HomeViewModel()
         {
-            var workTimes = _context.WorkTimes.ToList();
-            var workTimesPerDay = workTimes
-                .GroupBy(wt => wt.Start.Date)
-                .Select(g => new { Date = g.Key, TotalHours = g.Sum(x => x.Duration.TotalHours) })
-                .ToDictionary(d => d.Date, d => d.TotalHours);
+            var workTimesPerDay = _workTimeRepository.GetWorkTimesPerDay();
 
             SeriesCollection = new SeriesCollection()
             {
