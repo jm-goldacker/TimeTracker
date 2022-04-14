@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace MyTime.ViewModels
 {
-    public class WorkTimeViewModel : Observerable, IWorkTimeViewModel
+    public class WorkTimeViewModel : Observerable
     {
         public RelayCommand StartWork { get; set; }
 
@@ -49,17 +49,21 @@ namespace MyTime.ViewModels
 
         public AccumulatedTimes AccumulatedPauseTimes { get; private set; } = new();
 
-        public WorkStopWatch WorkTimeStopWatch { get; } = WorkStopWatch.Instance;
+        public IWorkStopWatch WorkTimeStopWatch { get; }
 
-        public PauseStopWatch PauseTimeStopWatch { get; } = PauseStopWatch.Instance;
+        public IPauseStopWatch PauseTimeStopWatch { get; }
 
         private readonly List<PauseTime> _currentPauseTimes = new();
 
         private readonly IDatabaseRepository _repository;
 
-        public WorkTimeViewModel(IDatabaseRepository repository)
+        public WorkTimeViewModel(IDatabaseRepository repository, IWorkStopWatch workStopWatch, IPauseStopWatch pauseStopWatch)
         {
             _repository = repository;
+
+            WorkTimeStopWatch = workStopWatch;
+            PauseTimeStopWatch = pauseStopWatch;
+
             LoadTimes();
 
             StartWork = new RelayCommand(OnStartWorkExecute, OnStartWorkCanExecute);

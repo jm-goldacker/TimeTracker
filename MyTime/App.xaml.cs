@@ -13,8 +13,8 @@ namespace MyTime
         {
             base.OnStartup(e);
 
-            var binder = new Binder();
-            var container = binder.Bind();
+            var binder = new Bootstrapper();
+            var container = binder.Bootstrap();
             DISource.Resolver = (type) =>
             {
                 return container.Resolve(type);
@@ -24,7 +24,6 @@ namespace MyTime
             {
                 
                 var mw = scope.Resolve<MainWindow>();
-                //mw.DataContext = scope.Resolve<MainViewModel>();
                 mw.Show();
             }
         }

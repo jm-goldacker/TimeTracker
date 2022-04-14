@@ -2,12 +2,7 @@
 
 namespace MyTime.Models.StopWatches
 {
-    public sealed class TaskStopWatch : StopWatch
+    public sealed class TaskStopWatch : StopWatch, ITaskStopWatch
     {
-        private TaskStopWatch() : base() { }
-
-        private static readonly Lazy<TaskStopWatch> _instance = new Lazy<TaskStopWatch>(() =>new TaskStopWatch());
-
-        public static TaskStopWatch Instance => _instance.Value;
     }
 }

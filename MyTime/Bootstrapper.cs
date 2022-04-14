@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using MyTime.Models.StopWatches;
 using MyTime.Repositories;
 using MyTime.ViewModels;
 using MyTime.Views;
@@ -10,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace MyTime
 {
-    internal class Binder
+    internal class Bootstrapper
     {
-        public IContainer Bind()
+        public IContainer Bootstrap()
         {
             var builder = new ContainerBuilder();
 
@@ -25,6 +26,21 @@ namespace MyTime
 
             builder.RegisterType<MainWindow>().AsSelf();
             builder.RegisterType<HomeView>().AsSelf();
+
+            builder.RegisterType<PauseStopWatch>()
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
+            builder.RegisterType<TaskStopWatch>()
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
+            builder.RegisterType<WorkStopWatch>()
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .SingleInstance();
 
             return builder.Build();
         }

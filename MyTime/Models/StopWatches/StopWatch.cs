@@ -6,9 +6,9 @@ using System.Windows.Threading;
 
 namespace MyTime.Models
 {
-    public abstract class StopWatch : DispatcherTimer, INotifyPropertyChanged
+    public abstract class StopWatch : INotifyPropertyChanged
     {
-
+        private DispatcherTimer _timer = new();
         private Stopwatch _stopWatch = new();
         private DateTime _endTime;
 
@@ -43,8 +43,8 @@ namespace MyTime.Models
 
         public StopWatch() : base()
         {
-            Interval = new TimeSpan(0, 0, 1);
-            Tick += new EventHandler(delegate (object? sender, EventArgs e)
+            _timer.Interval = new TimeSpan(0, 0, 1);
+            _timer.Tick += new EventHandler(delegate (object? sender, EventArgs e)
             {
                 OnPropertyChanged("Duration");
             });
@@ -52,16 +52,16 @@ namespace MyTime.Models
 
         public void Start(bool resume = false)
         {
-            base.Start();
+            _timer.Start();
             _stopWatch.Start();
 
             if (!resume)
                 StartTime = DateTime.Now;
         }
 
-        public new void Stop()
+        public void Stop()
         {
-            base.Stop();
+            _timer.Stop();
             _stopWatch.Reset();
 
             EndTime = DateTime.Now;

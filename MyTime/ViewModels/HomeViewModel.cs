@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace MyTime.ViewModels
 {
-    public class HomeViewModel : Observerable, IHomeViewModel
+    public class HomeViewModel : Observerable
     {
         private readonly IDatabaseRepository _repository;
 
