@@ -7,18 +7,18 @@ using System.Collections.ObjectModel;
 
 namespace MyTime.ViewModels
 {
-    class WorkTimeViewModel : Observerable
-    {   
-        public RelayCommand StartWork {get; set; }
+    public class WorkTimeViewModel : Observerable, IWorkTimeViewModel
+    {
+        public RelayCommand StartWork { get; set; }
 
-        public RelayCommand StopWork { get; set;}
+        public RelayCommand StopWork { get; set; }
 
         public RelayCommand PauseWork { get; set; }
 
         private ObservableCollection<WorkTime> _workTimes;
 
-        public ObservableCollection<WorkTime> WorkTimes 
-        { 
+        public ObservableCollection<WorkTime> WorkTimes
+        {
             get
             {
                 return _workTimes;
@@ -55,10 +55,11 @@ namespace MyTime.ViewModels
 
         private readonly List<PauseTime> _currentPauseTimes = new();
 
-        private readonly IDatabaseRepository _workTimeRepository = new DatabaseRepository();
+        private readonly IDatabaseRepository _repository;
 
-        public WorkTimeViewModel()
+        public WorkTimeViewModel(IDatabaseRepository repository)
         {
+            _repository = repository;
             LoadTimes();
 
             StartWork = new RelayCommand(OnStartWorkExecute, OnStartWorkCanExecute);
@@ -68,8 +69,8 @@ namespace MyTime.ViewModels
 
         private void LoadTimes()
         {
-            WorkTimes = new(_workTimeRepository.GetWorkTimes());
-            PauseTimes = new(_workTimeRepository.GetPauses());
+            WorkTimes = new(_repository.GetWorkTimes());
+            PauseTimes = new(_repository.GetPauses());
             AccumulatedWorkTimes.UpdateAccumulatedWorkTimes(WorkTimes);
             AccumulatedPauseTimes.UpdateAccumulatedWorkTimes(PauseTimes);
         }
@@ -115,7 +116,7 @@ namespace MyTime.ViewModels
 
             WorkTimes.Add(workTime);
             AccumulatedWorkTimes.UpdateAccumulatedWorkTimes(WorkTimes);
-            _workTimeRepository.SaveWorkTime(workTime);
+            _repository.SaveWorkTime(workTime);
         }
 
         private void SavePause()

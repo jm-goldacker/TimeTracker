@@ -8,16 +8,16 @@ using System.Linq;
 
 namespace MyTime.ViewModels
 {
-    class TasksViewModel : Observerable
+    public class TasksViewModel : Observerable, ITasksViewModel
     {
         public StopWatch TasksStopWatch { get; set; } = TaskStopWatch.Instance;
-       
+
         public RelayCommand StartTasksStopWatch { get; set; }
 
         public RelayCommand StopTasksStopWatch { get; set; }
 
         public string CurrentTaskName { get; set; } = string.Empty;
-        
+
         private ObservableCollection<TaskTime> _taskTimes;
 
         public ObservableCollection<TaskTime> TaskTimes
@@ -33,10 +33,11 @@ namespace MyTime.ViewModels
             }
         }
 
-        private readonly IDatabaseRepository _repository = new DatabaseRepository();
+        private readonly IDatabaseRepository _repository;
 
-        public TasksViewModel()
+        public TasksViewModel(IDatabaseRepository repository)
         {
+            _repository = repository;
             TaskTimes = new ObservableCollection<TaskTime>(_repository.GetTaskTimes());
 
             StartTasksStopWatch = new RelayCommand(OnStartTaskExecute, OnStartTaskCanExecute);
@@ -50,9 +51,9 @@ namespace MyTime.ViewModels
 
         private bool OnStartTaskCanExecute(object? arg)
         {
-            return WorkStopWatch.Instance.IsRunning && !TasksStopWatch.IsRunning; 
+            return WorkStopWatch.Instance.IsRunning && !TasksStopWatch.IsRunning;
         }
-        
+
         private void OnStopTaskExecute(object? obj)
         {
             if (TasksStopWatch.IsRunning)

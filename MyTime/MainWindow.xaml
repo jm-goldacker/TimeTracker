@@ -11,12 +11,9 @@
         Background="Transparent"
         WindowStyle="ToolWindow"
         ResizeMode="NoResize"
-        AllowsTransparency="False">
+        AllowsTransparency="False"
+        DataContext="{local:DISource Type=viewModels:MainViewModel}">
 
-    <Window.DataContext>
-        <viewModels:MainViewModel/>
-    </Window.DataContext>
-    
     <Border Background="#272537">
 
         <Grid>

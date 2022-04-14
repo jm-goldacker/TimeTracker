@@ -8,13 +8,14 @@ using System.Linq;
 
 namespace MyTime.ViewModels
 {
-    public class HomeViewModel : Observerable
+    public class HomeViewModel : Observerable, IHomeViewModel
     {
-        private readonly IDatabaseRepository _workTimeRepository = new DatabaseRepository();
+        private readonly IDatabaseRepository _repository;
 
-        public HomeViewModel()
+        public HomeViewModel(IDatabaseRepository repository)
         {
-            var workTimesPerDay = _workTimeRepository.GetWorkTimesPerDay();
+            _repository = repository;
+            var workTimesPerDay = _repository.GetWorkTimesPerDay();
 
             SeriesCollection = new SeriesCollection()
             {

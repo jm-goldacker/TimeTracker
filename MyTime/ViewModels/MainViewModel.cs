@@ -1,27 +1,28 @@
 ﻿using MyTime.Models;
+using MyTime.Repositories;
 using System.Windows;
 
 namespace MyTime.ViewModels
 {
-    class MainViewModel : Observerable
+    public class MainViewModel : Observerable
     {
-        private object _currentView = new HomeViewModel();
+        private object _currentView;
 
         public object CurrentView
         {
             get { return _currentView; }
-            private set 
-            { 
-                _currentView = value; 
+            private set
+            {
+                _currentView = value;
                 OnPropertyChanged();
             }
         }
 
-        public HomeViewModel HomeViewModel { get; } = new();
+        public HomeViewModel HomeViewModel { get; }
 
-        public TasksViewModel TasksViewModel { get; } = new();
+        public TasksViewModel TasksViewModel { get; }
 
-        public WorkTimeViewModel WorkTimeViewModel { get; } = new();
+        public WorkTimeViewModel WorkTimeViewModel { get; }
 
         public RelayCommand HomeViewCommand { get; }
 
@@ -31,11 +32,17 @@ namespace MyTime.ViewModels
 
         public RelayCommand CloseCommand { get; }
 
-        public MainViewModel()
-        {            
+        public MainViewModel(IDatabaseRepository repo, HomeViewModel homeViewModel, TasksViewModel tasksViewModel, WorkTimeViewModel workTimeViewModel)
+        {
+            HomeViewModel = homeViewModel;
+            TasksViewModel = tasksViewModel;
+            WorkTimeViewModel = workTimeViewModel;
+
+            CurrentView = homeViewModel;
+
             HomeViewCommand = new RelayCommand(o => CurrentView = HomeViewModel);
             TasksViewCommand = new RelayCommand(o => CurrentView = TasksViewModel);
-            WorkTimeViewCommand = new RelayCommand(o => CurrentView = WorkTimeViewModel );
+            WorkTimeViewCommand = new RelayCommand(o => CurrentView = WorkTimeViewModel);
             CloseCommand = new RelayCommand(CloseWindow);
         }
 
