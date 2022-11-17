@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using MyTime.Repositories;
 using MyTime.Views;
 using Prism.Ioc;
 using Prism.Unity;
@@ -20,6 +21,7 @@ namespace MyTime
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<HomeView>();
+            containerRegistry.Register<IDatabaseRepository, DatabaseRepository>();
         }
     }
 }
