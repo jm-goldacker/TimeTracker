@@ -36,6 +36,7 @@ namespace MyTime.ViewModels
         public MainWindowViewModel(IRegionManager regionManager)
         {
             this.regionManager = regionManager;
+            regionManager.RegisterViewWithRegion("ContentRegion", "HomeView");
 
             NavigateToViewInContentRegionCommand = new DelegateCommand<string>(NavigateToViewInContentRegion);
         }
