@@ -12,9 +12,9 @@ namespace MyTime.ViewModels
 {
     public class TasksViewModel : BindableBase
     {
-        public ITaskStopWatch TasksStopWatch { get; set; }
+        public IStopWatch TasksStopWatch { get; set; }
 
-        private IWorkStopWatch _workStopWatch;
+        public IStopWatch WorkTimeStopWatch { get; set; }
 
         public DelegateCommand StartTasksStopWatch { get; set; }
 
@@ -38,16 +38,20 @@ namespace MyTime.ViewModels
 
         private readonly IDatabaseRepository _repository;
 
-        public TasksViewModel(IDatabaseRepository repository, ITaskStopWatch taskStopWatch, IWorkStopWatch workStopWatch)
+        public TasksViewModel(IDatabaseRepository repository, IStopWatchesWrapper stopWatchesWrapper)
         {
             _repository = repository;
-            TasksStopWatch = taskStopWatch;
-            _workStopWatch = workStopWatch;
+            TasksStopWatch = stopWatchesWrapper.TaskStopWatch;
+            WorkTimeStopWatch = stopWatchesWrapper.WorkTimeStopWatch;
 
             TaskTimes = new ObservableCollection<TaskTime>(_repository.GetTaskTimes());
 
-            StartTasksStopWatch = new DelegateCommand(OnStartTaskExecute, OnStartTaskCanExecute);
-            StopTasksStopWatch = new DelegateCommand(OnStopTaskExecute, OnStopTaskCanExecute);
+            StartTasksStopWatch = new DelegateCommand(OnStartTaskExecute, OnStartTaskCanExecute)
+                .ObservesProperty(() => TasksStopWatch.IsRunning)
+                .ObservesProperty(() => WorkTimeStopWatch.IsRunning);
+            StopTasksStopWatch = new DelegateCommand(OnStopTaskExecute, OnStopTaskCanExecute)
+                .ObservesProperty(() => TasksStopWatch.IsRunning)
+                .ObservesProperty(() => WorkTimeStopWatch.IsRunning);
         }
 
         private void OnStartTaskExecute()
@@ -57,7 +61,7 @@ namespace MyTime.ViewModels
 
         private bool OnStartTaskCanExecute()
         {
-            return _workStopWatch.IsRunning && !TasksStopWatch.IsRunning;
+            return WorkTimeStopWatch.IsRunning && !TasksStopWatch.IsRunning;
         }
 
         private void OnStopTaskExecute()

@@ -5,7 +5,7 @@ using System.Windows.Threading;
 
 namespace MyTime.Models
 {
-    public abstract class StopWatch : BindableBase
+    public class StopWatch : BindableBase, IStopWatch
     {
         private DispatcherTimer _timer = new();
         private Stopwatch _stopWatch = new();
@@ -38,7 +38,7 @@ namespace MyTime.Models
             _timer.Tick += new EventHandler(delegate (object? sender, EventArgs e)
             {
                 
-                RaisePropertyChanged("Duration");
+                RaisePropertyChanged(nameof(Duration));
             });
         }
 
@@ -49,6 +49,8 @@ namespace MyTime.Models
 
             if (!resume)
                 StartTime = DateTime.Now;
+
+            RaisePropertyChanged(nameof(IsRunning));
         }
 
         public void Stop()
@@ -57,11 +59,15 @@ namespace MyTime.Models
             _stopWatch.Reset();
 
             EndTime = DateTime.Now;
+
+            RaisePropertyChanged(nameof(IsRunning));
         }
 
         public void Pause()
         {
             _stopWatch.Stop();
+
+            RaisePropertyChanged(nameof(IsRunning));
         }
 
         public bool IsRunning => _stopWatch.IsRunning;

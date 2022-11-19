@@ -49,26 +49,32 @@ namespace MyTime.ViewModels
 
         public AccumulatedTimes AccumulatedPauseTimes { get; private set; } = new();
 
-        public IWorkStopWatch WorkTimeStopWatch { get; }
+        public IStopWatch WorkTimeStopWatch { get; }
 
-        public IPauseStopWatch PauseTimeStopWatch { get; }
+        public IStopWatch PauseTimeStopWatch { get; }
 
         private readonly List<PauseTime> _currentPauseTimes = new();
 
         private readonly IDatabaseRepository _repository;
 
-        public WorkTimeViewModel(IDatabaseRepository repository, IWorkStopWatch workStopWatch, IPauseStopWatch pauseStopWatch)
+        public WorkTimeViewModel(IDatabaseRepository repository, IStopWatchesWrapper stopWatchesWrapper)
         {
             _repository = repository;
 
-            WorkTimeStopWatch = workStopWatch;
-            PauseTimeStopWatch = pauseStopWatch;
+            WorkTimeStopWatch = stopWatchesWrapper.WorkTimeStopWatch;
+            PauseTimeStopWatch = stopWatchesWrapper.PauseStopWatch;
 
             LoadTimes();
 
-            StartWork = new DelegateCommand(OnStartWorkExecute, OnStartWorkCanExecute);
-            StopWork = new DelegateCommand(OnStopWorkExecute, OnStopWorkCanExecute);
-            PauseWork = new DelegateCommand(OnPauseWorkExecute, OnPauseWorkCanExecute);
+            StartWork = new DelegateCommand(OnStartWorkExecute, OnStartWorkCanExecute)
+                .ObservesProperty(() => WorkTimeStopWatch.IsRunning)
+                .ObservesProperty(() => PauseTimeStopWatch.IsRunning);
+            StopWork = new DelegateCommand(OnStopWorkExecute, OnStopWorkCanExecute)
+                .ObservesProperty(() => WorkTimeStopWatch.IsRunning)
+                .ObservesProperty(() => PauseTimeStopWatch.IsRunning);
+            PauseWork = new DelegateCommand(OnPauseWorkExecute, OnPauseWorkCanExecute)
+                .ObservesProperty(() => WorkTimeStopWatch.IsRunning)
+                .ObservesProperty(() => PauseTimeStopWatch.IsRunning);
         }
 
         private void LoadTimes()
@@ -90,6 +96,7 @@ namespace MyTime.ViewModels
 
             else
                 WorkTimeStopWatch.Start();
+
         }
 
         private bool OnStartWorkCanExecute()

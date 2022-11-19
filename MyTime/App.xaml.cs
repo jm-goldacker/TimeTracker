@@ -25,9 +25,7 @@ namespace MyTime
             containerRegistry.RegisterForNavigation<WorkTimeView>();
             containerRegistry.RegisterForNavigation<TasksView>();
             containerRegistry.Register<IDatabaseRepository, DatabaseRepository>();
-            containerRegistry.RegisterSingleton<ITaskStopWatch, TaskStopWatch>();
-            containerRegistry.RegisterSingleton<IWorkStopWatch, WorkStopWatch>();
-            containerRegistry.RegisterSingleton<IPauseStopWatch, PauseStopWatch>();
+            containerRegistry.RegisterSingleton<IStopWatchesWrapper, StopWatchesWrapper>();
         }
     }
 }
