@@ -48,14 +48,16 @@
                                  Foreground="White"
                                  FontSize="14"
                                  Style="{StaticResource MenuButtonTheme}"
-                                 Command="{Binding WorkTimeViewCommand}"/>
+                                 Command="{Binding NavigateToViewInContentRegionCommand}"
+                                 CommandParameter="WorkTimeView"/>
 
                     <RadioButton Content="Tasks"
                                  Height ="50"
                                  Foreground="White"
                                  FontSize="14"
                                  Style="{StaticResource MenuButtonTheme}"
-                                 Command="{Binding TasksViewCommand}"/>
+                                 Command="{Binding NavigateToViewInContentRegionCommand}"
+                                 CommandParameter="TasksView"/>
 
                 </StackPanel>
 

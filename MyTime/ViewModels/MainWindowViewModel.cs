@@ -45,8 +45,13 @@ namespace MyTime.ViewModels
         {
             if (!string.IsNullOrEmpty(viewName))
             {
-                regionManager.RequestNavigate("ContentRegion", viewName);
+                regionManager.RequestNavigate("ContentRegion", viewName, Debug);
             }
+        }
+
+        public void Debug(NavigationResult r)
+        {
+            var t = r;
         }
 
         //public MainViewModel(IDatabaseRepository repo, HomeViewModel homeViewModel, TasksViewModel tasksViewModel, WorkTimeViewModel workTimeViewModel)

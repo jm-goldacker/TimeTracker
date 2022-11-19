@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using MyTime.Models.StopWatches;
 using MyTime.Repositories;
 using MyTime.Views;
 using Prism.Ioc;
@@ -21,7 +22,12 @@ namespace MyTime
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<HomeView>();
+            containerRegistry.RegisterForNavigation<WorkTimeView>();
+            containerRegistry.RegisterForNavigation<TasksView>();
             containerRegistry.Register<IDatabaseRepository, DatabaseRepository>();
+            containerRegistry.RegisterSingleton<ITaskStopWatch, TaskStopWatch>();
+            containerRegistry.RegisterSingleton<IWorkStopWatch, WorkStopWatch>();
+            containerRegistry.RegisterSingleton<IPauseStopWatch, PauseStopWatch>();
         }
     }
 }

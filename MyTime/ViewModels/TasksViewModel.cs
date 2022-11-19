@@ -2,21 +2,23 @@
 using MyTime.Models.Database;
 using MyTime.Models.StopWatches;
 using MyTime.Repositories;
+using Prism.Commands;
+using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace MyTime.ViewModels
 {
-    public class TasksViewModel : Observerable
+    public class TasksViewModel : BindableBase
     {
         public ITaskStopWatch TasksStopWatch { get; set; }
 
         private IWorkStopWatch _workStopWatch;
 
-        public RelayCommand StartTasksStopWatch { get; set; }
+        public DelegateCommand StartTasksStopWatch { get; set; }
 
-        public RelayCommand StopTasksStopWatch { get; set; }
+        public DelegateCommand StopTasksStopWatch { get; set; }
 
         public string CurrentTaskName { get; set; } = string.Empty;
 
@@ -30,8 +32,7 @@ namespace MyTime.ViewModels
             }
             set
             {
-                _taskTimes = value;
-                OnPropertyChanged();
+                SetProperty(ref _taskTimes, value);
             }
         }
 
@@ -45,21 +46,21 @@ namespace MyTime.ViewModels
 
             TaskTimes = new ObservableCollection<TaskTime>(_repository.GetTaskTimes());
 
-            StartTasksStopWatch = new RelayCommand(OnStartTaskExecute, OnStartTaskCanExecute);
-            StopTasksStopWatch = new RelayCommand(OnStopTaskExecute, OnStopTaskCanExecute);
+            StartTasksStopWatch = new DelegateCommand(OnStartTaskExecute, OnStartTaskCanExecute);
+            StopTasksStopWatch = new DelegateCommand(OnStopTaskExecute, OnStopTaskCanExecute);
         }
 
-        private void OnStartTaskExecute(object? obj)
+        private void OnStartTaskExecute()
         {
             TasksStopWatch.Start();
         }
 
-        private bool OnStartTaskCanExecute(object? arg)
+        private bool OnStartTaskCanExecute()
         {
             return _workStopWatch.IsRunning && !TasksStopWatch.IsRunning;
         }
 
-        private void OnStopTaskExecute(object? obj)
+        private void OnStopTaskExecute()
         {
             if (TasksStopWatch.IsRunning)
             {
@@ -77,7 +78,7 @@ namespace MyTime.ViewModels
             }
         }
 
-        private bool OnStopTaskCanExecute(object? arg)
+        private bool OnStopTaskCanExecute()
         {
             return TasksStopWatch.IsRunning;
         }
