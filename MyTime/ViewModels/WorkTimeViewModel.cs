@@ -2,18 +2,20 @@
 using MyTime.Models.Database;
 using MyTime.Models.StopWatches;
 using MyTime.Repositories;
+using Prism.Commands;
+using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace MyTime.ViewModels
 {
-    public class WorkTimeViewModel : Observerable
+    public class WorkTimeViewModel : BindableBase
     {
-        public RelayCommand StartWork { get; set; }
+        public DelegateCommand StartWork { get; set; }
 
-        public RelayCommand StopWork { get; set; }
+        public DelegateCommand StopWork { get; set; }
 
-        public RelayCommand PauseWork { get; set; }
+        public DelegateCommand PauseWork { get; set; }
 
         private ObservableCollection<WorkTime> _workTimes;
 
@@ -25,8 +27,7 @@ namespace MyTime.ViewModels
             }
             set
             {
-                _workTimes = value;
-                OnPropertyChanged();
+                SetProperty(ref _workTimes, value);
             }
         }
 
@@ -40,8 +41,7 @@ namespace MyTime.ViewModels
             }
             set
             {
-                _pauseTimes = value;
-                OnPropertyChanged();
+                SetProperty(ref _pauseTimes, value);
             }
         }
 
@@ -49,26 +49,32 @@ namespace MyTime.ViewModels
 
         public AccumulatedTimes AccumulatedPauseTimes { get; private set; } = new();
 
-        public IWorkStopWatch WorkTimeStopWatch { get; }
+        public IStopWatch WorkTimeStopWatch { get; }
 
-        public IPauseStopWatch PauseTimeStopWatch { get; }
+        public IStopWatch PauseTimeStopWatch { get; }
 
         private readonly List<PauseTime> _currentPauseTimes = new();
 
         private readonly IDatabaseRepository _repository;
 
-        public WorkTimeViewModel(IDatabaseRepository repository, IWorkStopWatch workStopWatch, IPauseStopWatch pauseStopWatch)
+        public WorkTimeViewModel(IDatabaseRepository repository, IStopWatchesWrapper stopWatchesWrapper)
         {
             _repository = repository;
 
-            WorkTimeStopWatch = workStopWatch;
-            PauseTimeStopWatch = pauseStopWatch;
+            WorkTimeStopWatch = stopWatchesWrapper.WorkTimeStopWatch;
+            PauseTimeStopWatch = stopWatchesWrapper.PauseStopWatch;
 
             LoadTimes();
 
-            StartWork = new RelayCommand(OnStartWorkExecute, OnStartWorkCanExecute);
-            StopWork = new RelayCommand(OnStopWorkExecute, OnStopWorkCanExecute);
-            PauseWork = new RelayCommand(OnPauseWorkExecute, OnPauseWorkCanExecute);
+            StartWork = new DelegateCommand(OnStartWorkExecute, OnStartWorkCanExecute)
+                .ObservesProperty(() => WorkTimeStopWatch.IsRunning)
+                .ObservesProperty(() => PauseTimeStopWatch.IsRunning);
+            StopWork = new DelegateCommand(OnStopWorkExecute, OnStopWorkCanExecute)
+                .ObservesProperty(() => WorkTimeStopWatch.IsRunning)
+                .ObservesProperty(() => PauseTimeStopWatch.IsRunning);
+            PauseWork = new DelegateCommand(OnPauseWorkExecute, OnPauseWorkCanExecute)
+                .ObservesProperty(() => WorkTimeStopWatch.IsRunning)
+                .ObservesProperty(() => PauseTimeStopWatch.IsRunning);
         }
 
         private void LoadTimes()
@@ -79,7 +85,7 @@ namespace MyTime.ViewModels
             AccumulatedPauseTimes.UpdateAccumulatedWorkTimes(PauseTimes);
         }
 
-        private void OnStartWorkExecute(object? o)
+        private void OnStartWorkExecute()
         {
             if (PauseTimeStopWatch.IsRunning)
             {
@@ -90,14 +96,15 @@ namespace MyTime.ViewModels
 
             else
                 WorkTimeStopWatch.Start();
+
         }
 
-        private bool OnStartWorkCanExecute(object? o)
+        private bool OnStartWorkCanExecute()
         {
             return !WorkTimeStopWatch.IsRunning || PauseTimeStopWatch.IsRunning;
         }
 
-        private void OnStopWorkExecute(object? o)
+        private void OnStopWorkExecute()
         {
             WorkTimeStopWatch.Stop();
             SaveWorkTime();
@@ -137,17 +144,17 @@ namespace MyTime.ViewModels
             _currentPauseTimes.Add(pauseTime);
         }
 
-        private bool OnStopWorkCanExecute(object? o)
+        private bool OnStopWorkCanExecute()
         {
             return WorkTimeStopWatch.IsRunning || PauseTimeStopWatch.IsRunning;
         }
 
-        private void OnPauseWorkExecute(object? o)
+        private void OnPauseWorkExecute()
         {
             PauseTimeStopWatch.Start();
         }
 
-        private bool OnPauseWorkCanExecute(object? o)
+        private bool OnPauseWorkCanExecute()
         {
             return WorkTimeStopWatch.IsRunning && !PauseTimeStopWatch.IsRunning;
         }
