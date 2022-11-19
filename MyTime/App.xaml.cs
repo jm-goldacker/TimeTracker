@@ -1,5 +1,9 @@
 ﻿using Autofac;
-using MyTime.ViewModels;
+using MyTime.Models.StopWatches;
+using MyTime.Repositories;
+using MyTime.Views;
+using Prism.Ioc;
+using Prism.Unity;
 using System.Windows;
 
 namespace MyTime
@@ -7,26 +11,21 @@ namespace MyTime
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
-        protected override void OnStartup(StartupEventArgs e)
+        protected override Window CreateShell()
         {
-            base.OnStartup(e);
-
-            var binder = new Bootstrapper();
-            var container = binder.Bootstrap();
-            DISource.Resolver = (type) =>
-            {
-                return container.Resolve(type);
-            };
-
-            using (var scope = container.BeginLifetimeScope())
-            {
-                
-                var mw = scope.Resolve<MainWindow>();
-                mw.Show();
-            }
+            var window = Container.Resolve<MainWindow>();
+            return window;
         }
 
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            containerRegistry.RegisterForNavigation<HomeView>();
+            containerRegistry.RegisterForNavigation<WorkTimeView>();
+            containerRegistry.RegisterForNavigation<TasksView>();
+            containerRegistry.Register<IDatabaseRepository, DatabaseRepository>();
+            containerRegistry.RegisterSingleton<IStopWatchesWrapper, StopWatchesWrapper>();
+        }
     }
 }

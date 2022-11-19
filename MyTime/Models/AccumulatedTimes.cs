@@ -1,11 +1,12 @@
 ﻿using MyTime.Models.Database;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace MyTime.Models
 {
-    public class AccumulatedTimes : Observerable
+    public class AccumulatedTimes : BindableBase
     {
         private TimeSpan _dailyTime;
         private TimeSpan _weeklyTime;
@@ -18,8 +19,7 @@ namespace MyTime.Models
             } 
             set
             {
-                _dailyTime = value;
-                OnPropertyChanged();
+                SetProperty(ref _dailyTime, value);
             }
         }
         public TimeSpan WeeklyTime 
@@ -30,8 +30,7 @@ namespace MyTime.Models
             }
             private set
             {
-                _weeklyTime = value;
-                OnPropertyChanged();
+                SetProperty(ref _weeklyTime, value);
             }
         }
         public TimeSpan MonthlyTime 
@@ -42,8 +41,7 @@ namespace MyTime.Models
             }
             private set
             {
-                _monthlyTime = value;
-                OnPropertyChanged();
+                SetProperty(ref _monthlyTime, value);
             }
         }
 

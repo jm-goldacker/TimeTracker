@@ -3,12 +3,13 @@ using LiveCharts.Wpf;
 using MyTime.Models;
 using MyTime.Models.Database;
 using MyTime.Repositories;
+using Prism.Mvvm;
 using System;
 using System.Linq;
 
 namespace MyTime.ViewModels
 {
-    public class HomeViewModel : Observerable
+    public class HomeViewModel : BindableBase
     {
         private readonly IDatabaseRepository _repository;
 
