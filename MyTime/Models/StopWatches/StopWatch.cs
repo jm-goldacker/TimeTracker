@@ -1,23 +1,15 @@
-﻿using System;
-using System.ComponentModel;
+﻿using Prism.Mvvm;
+using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 
 namespace MyTime.Models
 {
-    public abstract class StopWatch : INotifyPropertyChanged
+    public abstract class StopWatch : BindableBase
     {
         private DispatcherTimer _timer = new();
         private Stopwatch _stopWatch = new();
         private DateTime _endTime;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string? name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
 
         public DateTime StartTime { get; private set; }
 
@@ -28,8 +20,7 @@ namespace MyTime.Models
             } 
             private set
             {
-                _endTime = value;
-                OnPropertyChanged("Duration");
+                SetProperty(ref _endTime, value, "Duration");
             }
         }
 
@@ -46,7 +37,8 @@ namespace MyTime.Models
             _timer.Interval = new TimeSpan(0, 0, 1);
             _timer.Tick += new EventHandler(delegate (object? sender, EventArgs e)
             {
-                OnPropertyChanged("Duration");
+                
+                RaisePropertyChanged("Duration");
             });
         }
 
