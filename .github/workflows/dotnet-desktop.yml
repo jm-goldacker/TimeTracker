@@ -103,5 +103,4 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
+        name: artifact
