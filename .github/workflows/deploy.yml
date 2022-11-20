@@ -1,0 +1,47 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ "master" ]
+    tags:
+      - "v*"
+  pull_request:
+    branches: [ "master" ]
+    tags:
+      - "v*"
+
+jobs:
+
+  deploy:
+
+    runs-on: windows-latest 
+    
+    env:
+      Solution_Name: MyTime
+      Project_Path: MyTime/MyTime.csproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Restore the application
+      run: dotnet restore $env:Project_Path
+
+    - name: Build
+      run: dotnet build $env:Project_Path -c Release --no-restore
+
+    - name: Publish
+      run: dotnet publish $env:Project_Path -c Release --no-build
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: TimeTracker
+        path: D:\a\TimeTracker\TimeTracker\MyTime\bin\Release\net6.0-windows\publish\
