@@ -104,3 +104,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: artifact
+        path: MyTime/MyTime/bin/Release/net6.0-windows/publish/
