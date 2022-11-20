@@ -1,14 +1,18 @@
-name: .NET Core Desktop
+name: Deploy
 
 on:
   push:
     branches: [ "ci/cd" ] # [ "master" ]
+    tags:
+      - "v*"
   pull_request:
     branches: [ "ci/cd" ] # [ "master" ]
+    tags:
+      - "class-commands/v*"
 
 jobs:
 
-  build:
+  deploy:
 
     runs-on: windows-latest 
     
@@ -39,5 +43,5 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: artifact
+        name: TimeTracker
         path: D:\a\TimeTracker\TimeTracker\MyTime\bin\Release\net6.0-windows\publish\
