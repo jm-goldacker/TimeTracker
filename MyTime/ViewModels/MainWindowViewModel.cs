@@ -1,6 +1,4 @@
-﻿using MyTime.Models;
-using MyTime.Repositories;
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using System.Windows;

@@ -1,7 +1,5 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
-using MyTime.Models;
-using MyTime.Models.Database;
 using MyTime.Repositories;
 using Prism.Mvvm;
 using System;

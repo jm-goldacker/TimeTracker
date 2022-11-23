@@ -1,5 +1,4 @@
-﻿using MyTime.ViewModels;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace MyTime.Views
 {
