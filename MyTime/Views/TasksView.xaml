@@ -88,18 +88,17 @@
                   ScrollViewer.CanContentScroll="True" 
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                  Height="361"
+                  Height="362"
                   RowBackground="Transparent"
                   Background="Transparent"
                   Foreground="White" 
-                  BorderBrush="White" 
+                  BorderBrush="Transparent" 
                   SelectionUnit="Cell" 
                   SelectionMode="Extended" 
                   Visibility="Visible" 
-                  HorizontalGridLinesBrush="White" 
-                  VerticalGridLinesBrush="White" 
-                  GridLinesVisibility="All" 
-                  HorizontalAlignment="Stretch">
+                  GridLinesVisibility="None" 
+                  HorizontalAlignment="Stretch" 
+                  AlternatingRowBackground="#FF2F445F">
 
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
